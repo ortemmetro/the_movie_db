@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:the_movie_db/widgets/auth/auth_widget.dart';
-import 'package:the_movie_db/widgets/auth/auth_widget_model.dart';
-import 'package:the_movie_db/widgets/main_screen/main_screen_widget.dart';
-import 'package:the_movie_db/widgets/movie_details/movie_details_widget.dart';
+import 'package:the_movie_db/main_model.dart';
+import 'package:the_movie_db/ui/navigation/main_navigation.dart';
+import 'package:the_movie_db/ui/widgets/auth/auth_widget.dart';
+import 'package:the_movie_db/ui/widgets/auth/auth_widget_model.dart';
+import 'package:the_movie_db/ui/widgets/main_screen/main_screen_widget.dart';
+import 'package:the_movie_db/ui/widgets/movie_details/movie_details_widget.dart';
 
-import 'Theme/app_colors.dart';
+import 'ui/theme/app_colors.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  final model = MainModel();
+  await model.checkAuth();
+  runApp( MyApp(model: model));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final MainModel model;
+  static final mainNavigation = MainNavigation();
+  const MyApp({Key? key, required this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,22 +35,9 @@ class MyApp extends StatelessWidget {
           unselectedItemColor: Colors.grey,
         ),
       ),
-      routes: {
-        '/auth': (context) => AuthWidgetModelProvider(
-              child: AuthWidget(),
-              model: AuthWidgetModel(),
-            ),
-        '/main_screen': (context) => const MainScreenWidget(),
-        '/main_screen/movie_details_widget': (context) {
-          final arguments = ModalRoute.of(context)?.settings.arguments;
-          if (arguments is int) {
-            return MovieDetailsWidget(movieId: arguments);
-          } else {
-            return MovieDetailsWidget(movieId: 0);
-          }
-        },
-      },
-      initialRoute: '/auth',
+      routes: mainNavigation.routes,
+      initialRoute: mainNavigation.initialRoute(model.isAuth),
+      onGenerateRoute: mainNavigation.onGenerateRoute,
     );
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
-import 'package:the_movie_db/Theme/app_button_style.dart';
-import 'package:the_movie_db/widgets/auth/auth_widget_model.dart';
-import 'package:the_movie_db/widgets/main_screen/main_screen_widget.dart';
+import 'package:the_movie_db/ui/theme/app_button_style.dart';
+import 'package:the_movie_db/ui/widgets/auth/auth_widget_model.dart';
+import 'package:the_movie_db/ui/widgets/main_screen/main_screen_widget.dart';
 
 class AuthWidget extends StatefulWidget {
   const AuthWidget({Key? key}) : super(key: key);

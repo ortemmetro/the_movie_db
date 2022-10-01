@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:the_movie_db/domain/data_providers/session_data_provider.dart';
+import 'package:the_movie_db/ui/navigation/main_navigation.dart';
 
-import '../../domain/api_client/api_client.dart';
+import '../../../domain/api_client/api_client.dart';
 
 class AuthWidgetModel extends ChangeNotifier {
   final _apiClient = ApiClient();
@@ -47,7 +48,7 @@ class AuthWidgetModel extends ChangeNotifier {
       return;
     }
     await _sessionDataProvider.setSessionId(sessionId);
-    Navigator.of(context).pushNamed('/main_screen');
+    Navigator.of(context).pushReplacementNamed(MainNavigationRouteNames.mainScreen);
   }
 }
 

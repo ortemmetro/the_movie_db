@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:the_movie_db/domain/data_providers/session_data_provider.dart';
 
 import '../movie_list/movie_list_widget.dart';
 
@@ -27,6 +28,12 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
       appBar: AppBar(
         title: Text('TMDB'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () => SessionDataProvider().setSessionId(null),
+            icon: const Icon(Icons.search),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: onSelectTab,
