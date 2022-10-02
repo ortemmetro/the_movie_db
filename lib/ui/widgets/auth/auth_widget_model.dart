@@ -33,45 +33,58 @@ class AuthWidgetModel extends ChangeNotifier {
         username: login,
         password: password,
       );
-    } catch (e) {
-      _errorMessage = 'Неправильный логин или пароль!';
+    } on ApiClientException catch (e) {
+      switch (e.type) {
+        case ApiClientExceptionType.network:
+          _errorMessage =
+              'Сервер не доступен. Проверьте подключение к интернету!';
+          break;
+        case ApiClientExceptionType.auth:
+          _errorMessage = 'Неправильный логин или пароль!';
+          break;
+        case ApiClientExceptionType.other:
+          _errorMessage = 'Произошла ошибка. Попробуйте ещё раз';
+          break;
+      }
     }
     _isAuthProgress = false;
     if (_errorMessage != null) {
       notifyListeners();
-      return; 
+      return;
     }
 
-    if(sessionId ==null){
+    if (sessionId == null) {
       _errorMessage = 'Неизвестная ошибка, повторите попытку позже';
       notifyListeners();
       return;
     }
     await _sessionDataProvider.setSessionId(sessionId);
-    Navigator.of(context).pushReplacementNamed(MainNavigationRouteNames.mainScreen);
+    Navigator.of(context)
+        .pushReplacementNamed(MainNavigationRouteNames.mainScreen);
   }
 }
 
-class AuthWidgetModelProvider extends InheritedNotifier {
-  final AuthWidgetModel model;
-  const AuthWidgetModelProvider({
-    super.key,
-    required this.model,
-    required Widget child,
-  }) : super(
-          child: child,
-          notifier: model,
-        );
+// class AuthWidgetModelProvider extends InheritedNotifier {
+//   final AuthWidgetModel model;
+//   const AuthWidgetModelProvider({
+//     super.key,
+//     required this.model,
+//     required Widget child,
+//   }) : super(
+//           child: child,
+//           notifier: model,
+//         );
 
-  static AuthWidgetModelProvider? watch(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<AuthWidgetModelProvider>();
-  }
+//   static AuthWidgetModelProvider? watch(BuildContext context) {
+//     return context
+//         .dependOnInheritedWidgetOfExactType<AuthWidgetModelProvider>();
+//   }
 
-  static AuthWidgetModelProvider? read(BuildContext context) {
-    final widget = context
-        .getElementForInheritedWidgetOfExactType<AuthWidgetModelProvider>()
-        ?.widget;
-    return widget is AuthWidgetModelProvider ? widget : null;
-  }
-}
+//   static AuthWidgetModelProvider? read(BuildContext context) {
+//     final widget = context
+//         .getElementForInheritedWidgetOfExactType<AuthWidgetModelProvider>()
+//         ?.widget;
+//     return widget is AuthWidgetModelProvider ? widget : null;
+//   }
+// }
+

@@ -5,6 +5,8 @@ import 'package:the_movie_db/ui/theme/app_button_style.dart';
 import 'package:the_movie_db/ui/widgets/auth/auth_widget_model.dart';
 import 'package:the_movie_db/ui/widgets/main_screen/main_screen_widget.dart';
 
+import '../../../Library/Widgets/Inherited/provider.dart';
+
 class AuthWidget extends StatefulWidget {
   const AuthWidget({Key? key}) : super(key: key);
 
@@ -17,7 +19,7 @@ class _AuthWidgetState extends State<AuthWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login to your account'),
+        title: const Text('Login to your account'),
       ),
       body: ListView(
         children: [_HeaderWidget()],
@@ -38,29 +40,29 @@ class _HeaderWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           _FormWidget(),
-          SizedBox(height: 30),
-          Text(
+          const SizedBox(height: 30),
+          const Text(
             'In order to use the editing and rating capabilities of TMDB, as well as get personal recommendations you will need to login to your account. If you do not have an account, registering for an account is free and simple. Click here to get started.',
             style: textStyle,
           ),
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
           TextButton(
             style: AppButtonStyle.linkButton,
             onPressed: () {},
-            child: Text('Register'),
+            child: const Text('Register'),
           ),
-          SizedBox(height: 30),
-          Text(
+          const SizedBox(height: 30),
+          const Text(
             "If you signed up but didn't get your verification email, click here to have it resent.",
             style: textStyle,
           ),
-          SizedBox(height: 5),
+          const SizedBox(height: 5),
           TextButton(
             style: AppButtonStyle.linkButton,
             onPressed: () {},
-            child: Text('Verify email'),
+            child: const Text('Verify email'),
           ),
         ],
       ),
@@ -73,7 +75,7 @@ class _FormWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = AuthWidgetModelProvider.read(context)?.model;
+    final model = NotifierProvider.read<AuthWidgetModel>(context);
     const textStyle = TextStyle(
       fontSize: 16,
       color: Color(0xFF2125529),
@@ -132,7 +134,7 @@ class _AuthButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = AuthWidgetModelProvider.watch(context)?.model;
+    final model = NotifierProvider.watch<AuthWidgetModel>(context);
     const activeTextFieldColor = Color(0xFF01B4E4);
     final onPressed =
         model?.canStartAuth == true ? () => model?.auth(context) : null;
@@ -172,7 +174,7 @@ class _ErrorMessageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final errorMessage =
-        AuthWidgetModelProvider.watch(context)?.model.errorMessage;
+        NotifierProvider.watch<AuthWidgetModel>(context)?.errorMessage;
     if (errorMessage == null) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),

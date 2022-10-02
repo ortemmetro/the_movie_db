@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:the_movie_db/ui/widgets/main_screen/main_screen_widget_model.dart';
 
+import '../../Library/Widgets/Inherited/provider.dart';
 import '../widgets/auth/auth_widget.dart';
 import '../widgets/auth/auth_widget_model.dart';
 import '../widgets/main_screen/main_screen_widget.dart';
@@ -17,11 +19,14 @@ class MainNavigation {
       ? MainNavigationRouteNames.mainScreen
       : MainNavigationRouteNames.auth;
   final routes = <String, Widget Function(BuildContext)>{
-    MainNavigationRouteNames.auth: (context) => AuthWidgetModelProvider(
+    MainNavigationRouteNames.auth: (context) => NotifierProvider(
           model: AuthWidgetModel(),
           child: const AuthWidget(),
         ),
-    MainNavigationRouteNames.mainScreen: (context) => const MainScreenWidget(),
+    MainNavigationRouteNames.mainScreen: (context) => NotifierProvider(
+          model: MainScreenWidgetModel(),
+          child: const MainScreenWidget(),
+        ),
   };
 
   Route<Object> onGenerateRoute(RouteSettings settings) {
