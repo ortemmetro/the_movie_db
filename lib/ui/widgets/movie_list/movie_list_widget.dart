@@ -2,155 +2,31 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:intl/intl.dart';
+import 'package:the_movie_db/domain/api_client/api_client.dart';
 import 'package:the_movie_db/resources/resources.dart';
 import 'package:the_movie_db/ui/navigation/main_navigation.dart';
+import 'package:the_movie_db/ui/widgets/movie_list/movie_list_widget_model.dart';
 
-class Movie {
-  final int id;
-  final String imageName;
-  final String title;
-  final String time;
-  final String description;
+import '../../../Library/Widgets/Inherited/provider.dart';
 
-  Movie({
-    required this.id,
-    required this.imageName,
-    required this.title,
-    required this.time,
-    required this.description,
-  });
-}
-
-class MovieListWidget extends StatefulWidget {
-  MovieListWidget({Key? key}) : super(key: key);
-
-  @override
-  State<MovieListWidget> createState() => _MovieListWidgetState();
-}
-
-class _MovieListWidgetState extends State<MovieListWidget> {
-  final _movies = [
-    Movie(
-      id: 1,
-      imageName: AppImages.mortalcombat8,
-      title: 'Mortal Kombat',
-      time: 'April 7, 2021',
-      description:
-          "MMA fighter Cole Young (Lewis Tan), accustomed to taking a beating for money, is unaware of his heritage-or why Outworld's Emperor Shang Tsung (Chin Han) has sent his best warrior, Sub-Zero (Joe Taslim), an otherworldly Cryomancer, to hunt Cole down. Fearing for his family's safety, Cole goes in search of Sonya Blade (Jessica McNamee) at the direction of Jax (Mehcad Brooks), a Special Forces Major who bears the same strange dragon marking Cole was born with.",
-    ),
-    Movie(
-      id: 2,
-      imageName: AppImages.mortalcombat8,
-      title: 'Interstellar',
-      time: 'April 7, 2021',
-      description:
-          "MMA fighter Cole Young (Lewis Tan), accustomed to taking a beating for money, is unaware of his heritage-or why Outworld's Emperor Shang Tsung (Chin Han) has sent his best warrior, Sub-Zero (Joe Taslim), an otherworldly Cryomancer, to hunt Cole down. Fearing for his family's safety, Cole goes in search of Sonya Blade (Jessica McNamee) at the direction of Jax (Mehcad Brooks), a Special Forces Major who bears the same strange dragon marking Cole was born with.",
-    ),
-    Movie(
-      id: 3,
-      imageName: AppImages.mortalcombat8,
-      title: 'Fight club',
-      time: 'April 7, 2021',
-      description:
-          "MMA fighter Cole Young (Lewis Tan), accustomed to taking a beating for money, is unaware of his heritage-or why Outworld's Emperor Shang Tsung (Chin Han) has sent his best warrior, Sub-Zero (Joe Taslim), an otherworldly Cryomancer, to hunt Cole down. Fearing for his family's safety, Cole goes in search of Sonya Blade (Jessica McNamee) at the direction of Jax (Mehcad Brooks), a Special Forces Major who bears the same strange dragon marking Cole was born with.",
-    ),
-    Movie(
-      id: 4,
-      imageName: AppImages.mortalcombat8,
-      title: 'Deathnote',
-      time: 'April 7, 2021',
-      description:
-          "MMA fighter Cole Young (Lewis Tan), accustomed to taking a beating for money, is unaware of his heritage-or why Outworld's Emperor Shang Tsung (Chin Han) has sent his best warrior, Sub-Zero (Joe Taslim), an otherworldly Cryomancer, to hunt Cole down. Fearing for his family's safety, Cole goes in search of Sonya Blade (Jessica McNamee) at the direction of Jax (Mehcad Brooks), a Special Forces Major who bears the same strange dragon marking Cole was born with.",
-    ),
-    Movie(
-      id: 5,
-      imageName: AppImages.mortalcombat8,
-      title: 'Spongebob Squarepants',
-      time: 'April 7, 2021',
-      description:
-          "MMA fighter Cole Young (Lewis Tan), accustomed to taking a beating for money, is unaware of his heritage-or why Outworld's Emperor Shang Tsung (Chin Han) has sent his best warrior, Sub-Zero (Joe Taslim), an otherworldly Cryomancer, to hunt Cole down. Fearing for his family's safety, Cole goes in search of Sonya Blade (Jessica McNamee) at the direction of Jax (Mehcad Brooks), a Special Forces Major who bears the same strange dragon marking Cole was born with.",
-    ),
-    Movie(
-      id: 6,
-      imageName: AppImages.mortalcombat8,
-      title: 'Icarly',
-      time: 'April 7, 2021',
-      description:
-          "MMA fighter Cole Young (Lewis Tan), accustomed to taking a beating for money, is unaware of his heritage-or why Outworld's Emperor Shang Tsung (Chin Han) has sent his best warrior, Sub-Zero (Joe Taslim), an otherworldly Cryomancer, to hunt Cole down. Fearing for his family's safety, Cole goes in search of Sonya Blade (Jessica McNamee) at the direction of Jax (Mehcad Brooks), a Special Forces Major who bears the same strange dragon marking Cole was born with.",
-    ),
-    Movie(
-      id: 7,
-      imageName: AppImages.mortalcombat8,
-      title: 'Avengers',
-      time: 'April 7, 2021',
-      description:
-          "MMA fighter Cole Young (Lewis Tan), accustomed to taking a beating for money, is unaware of his heritage-or why Outworld's Emperor Shang Tsung (Chin Han) has sent his best warrior, Sub-Zero (Joe Taslim), an otherworldly Cryomancer, to hunt Cole down. Fearing for his family's safety, Cole goes in search of Sonya Blade (Jessica McNamee) at the direction of Jax (Mehcad Brooks), a Special Forces Major who bears the same strange dragon marking Cole was born with.",
-    ),
-    Movie(
-      id: 8,
-      imageName: AppImages.mortalcombat8,
-      title: 'Invincible',
-      time: 'April 7, 2021',
-      description:
-          "MMA fighter Cole Young (Lewis Tan), accustomed to taking a beating for money, is unaware of his heritage-or why Outworld's Emperor Shang Tsung (Chin Han) has sent his best warrior, Sub-Zero (Joe Taslim), an otherworldly Cryomancer, to hunt Cole down. Fearing for his family's safety, Cole goes in search of Sonya Blade (Jessica McNamee) at the direction of Jax (Mehcad Brooks), a Special Forces Major who bears the same strange dragon marking Cole was born with.",
-    ),
-    Movie(
-      id: 9,
-      imageName: AppImages.mortalcombat8,
-      title: 'Naruto',
-      time: 'April 7, 2021',
-      description:
-          "MMA fighter Cole Young (Lewis Tan), accustomed to taking a beating for money, is unaware of his heritage-or why Outworld's Emperor Shang Tsung (Chin Han) has sent his best warrior, Sub-Zero (Joe Taslim), an otherworldly Cryomancer, to hunt Cole down. Fearing for his family's safety, Cole goes in search of Sonya Blade (Jessica McNamee) at the direction of Jax (Mehcad Brooks), a Special Forces Major who bears the same strange dragon marking Cole was born with.",
-    ),
-    Movie(
-      id: 10,
-      imageName: AppImages.mortalcombat8,
-      title: 'JoJo',
-      time: 'April 7, 2021',
-      description:
-          "MMA fighter Cole Young (Lewis Tan), accustomed to taking a beating for money, is unaware of his heritage-or why Outworld's Emperor Shang Tsung (Chin Han) has sent his best warrior, Sub-Zero (Joe Taslim), an otherworldly Cryomancer, to hunt Cole down. Fearing for his family's safety, Cole goes in search of Sonya Blade (Jessica McNamee) at the direction of Jax (Mehcad Brooks), a Special Forces Major who bears the same strange dragon marking Cole was born with.",
-    ),
-  ];
-
-  var _filteredMovies = <Movie>[];
-
-  final _searchController = TextEditingController();
-
-  void _searchMovies() {
-    final query = _searchController.text;
-    if (query.isNotEmpty) {
-      _filteredMovies = _movies.where((Movie movie) {
-        return movie.title.toLowerCase().contains(query.toLowerCase());
-      }).toList();
-    } else {
-      _filteredMovies = _movies;
-    }
-    setState(() {});
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _filteredMovies = _movies;
-    _searchController.addListener(_searchMovies);
-  }
-
-  void _onMovieTap(int index) {
-    final id = _movies[index].id;
-    Navigator.of(context).pushNamed(MainNavigationRouteNames.movieDetails, arguments: id);
-  }
+class MovieListWidget extends StatelessWidget {
+  const MovieListWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final model = NotifierProvider.watch<MovieListWidgetModel>(context);
+    if (model == null) return const SizedBox.shrink();
     return Stack(
       children: [
         ListView.builder(
-          padding: EdgeInsets.only(top: 80),
+          padding: const EdgeInsets.only(top: 80),
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          itemCount: _filteredMovies.length,
+          itemCount: model.movies.length,
           itemExtent: 163,
           itemBuilder: (BuildContext context, int index) {
-            final movie = _filteredMovies[index];
+            final movie = model.movies[index];
+            final posterPath = movie.posterPath;
             return Container(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
@@ -170,8 +46,12 @@ class _MovieListWidgetState extends State<MovieListWidget> {
                 children: [
                   Row(
                     children: [
-                      Image(image: AssetImage(movie.imageName)),
-                      SizedBox(width: 15),
+                      // Image(image: AssetImage(movie.imageName)),
+                      posterPath != null
+                          ? Image.network(ApiClient.imageUrl(posterPath),
+                              width: 95)
+                          : const SizedBox.shrink(),
+                      const SizedBox(width: 15),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,14 +65,14 @@ class _MovieListWidgetState extends State<MovieListWidget> {
                             ),
                             SizedBox(height: 5),
                             Text(
-                              movie.time,
+                              model.stringFromDate(movie.releaseDate),
                               style: TextStyle(color: Colors.grey),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                             SizedBox(height: 20),
                             Text(
-                              movie.description,
+                              movie.overview,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -206,7 +86,7 @@ class _MovieListWidgetState extends State<MovieListWidget> {
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(10),
-                      onTap: () => _onMovieTap(index),
+                      onTap: () => model.onMovieTap(context, index),
                     ),
                   ),
                 ],
@@ -217,7 +97,6 @@ class _MovieListWidgetState extends State<MovieListWidget> {
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: TextField(
-            controller: _searchController,
             decoration: InputDecoration(
               labelText: 'Search',
               filled: true,
