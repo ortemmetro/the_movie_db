@@ -102,7 +102,6 @@ class ApiClient {
     );
     return result;
   }
-  
 
   Future<PopularMovieResponse> popularMovie(int page, String language) async {
     final parser = (dynamic json) {
@@ -122,6 +121,29 @@ class ApiClient {
     return result;
   }
 
+  Future<PopularMovieResponse> searchMovie(
+    int page,
+    String language,
+    String query,
+  ) async {
+    final parser = (dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = PopularMovieResponse.fromJson(jsonMap);
+      return response;
+    };
+    final result = _get(
+      '/search/movie',
+      parser,
+      <String, dynamic>{
+        'api_key': _apiKey,
+        'page': page.toString(),
+        'language': language,
+        'query': query,
+        'include_adult': true.toString(),
+      },
+    );
+    return result;
+  }
 
   Future<String> _validateUser({
     required String username,
