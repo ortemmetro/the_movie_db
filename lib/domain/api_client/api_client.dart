@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart';
+import 'package:the_movie_db/domain/entity/movie_details.dart';
 
 import '../entity/popular_movie_response.dart';
 
@@ -140,6 +141,26 @@ class ApiClient {
         'language': language,
         'query': query,
         'include_adult': true.toString(),
+      },
+    );
+    return result;
+  }
+
+  Future<MovieDetails> movieDetails(
+    int movieId,
+    String language,
+  ) async {
+    final parser = (dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = MovieDetails.fromJson(jsonMap);
+      return response;
+    };
+    final result = _get(
+      '/movie/{$movieId}',
+      parser,
+      <String, dynamic>{
+        'api_key': _apiKey,
+        'language': language,
       },
     );
     return result;

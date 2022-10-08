@@ -23,9 +23,9 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
       body: ColoredBox(
         color: Color.fromRGBO(24, 23, 27, 1.0),
         child: ListView(
-          children: [
-            MovieDetailsMainInfoWidget(),
-            MovieDetailsScreenCastWidget(),
+          children: const [
+             MovieDetailsMainInfoWidget(),
+             MovieDetailsScreenCastWidget(),
           ],
         ),
       ),
