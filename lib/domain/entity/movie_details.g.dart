@@ -31,8 +31,7 @@ MovieDetails _$MovieDetailsFromJson(Map<String, dynamic> json) => MovieDetails(
       productionCountries: (json['production_countries'] as List<dynamic>)
           .map((e) => ProductionCountrie.fromJson(e as Map<String, dynamic>))
           .toList(),
-      releaseDate:
-          MovieDetails._parseDateFromString(json['release_date'] as String?),
+      releaseDate: parseMovieDateFromString(json['release_date'] as String?),
       revenue: json['revenue'] as int,
       runtime: json['runtime'] as int?,
       spokenLanguages: (json['spoken_languages'] as List<dynamic>)

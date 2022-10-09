@@ -156,7 +156,7 @@ class ApiClient {
       return response;
     };
     final result = _get(
-      '/movie/{$movieId}',
+      '/movie/$movieId',
       parser,
       <String, dynamic>{
         'api_key': _apiKey,
