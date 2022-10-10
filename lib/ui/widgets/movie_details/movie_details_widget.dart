@@ -27,14 +27,9 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
         title: const _TitleWidget(),
         centerTitle: true,
       ),
-      body: ColoredBox(
+      body: const ColoredBox(
         color: Color.fromRGBO(24, 23, 27, 1.0),
-        child: ListView(
-          children: const [
-            MovieDetailsMainInfoWidget(),
-            MovieDetailsScreenCastWidget(),
-          ],
-        ),
+        child: _BodyWidget(),
       ),
     );
   }
@@ -45,8 +40,26 @@ class _TitleWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model =
-        NotifierProvider.watch<MovieDetailsModel>(context);
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
     return Text(model?.movieDetails?.title ?? 'Загрузка...');
+  }
+}
+
+class _BodyWidget extends StatelessWidget {
+  const _BodyWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    final movieDetails = model?.movieDetails;
+    if(movieDetails == null){
+      return const Center(child: CircularProgressIndicator());
+    }
+    return ListView(
+      children: const [
+        MovieDetailsMainInfoWidget(),
+        MovieDetailsScreenCastWidget(),
+      ],
+    );
   }
 }

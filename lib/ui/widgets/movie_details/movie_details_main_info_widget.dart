@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:intl/intl.dart';
+import 'package:the_movie_db/domain/api_client/api_client.dart';
 import 'package:the_movie_db/resources/resources.dart';
 import 'package:the_movie_db/ui/widgets/radial_percent/radial_percent_widget.dart';
+
+import '../../../Library/Widgets/Inherited/provider.dart';
+import 'movie_details_model.dart';
 
 class MovieDetailsMainInfoWidget extends StatelessWidget {
   const MovieDetailsMainInfoWidget({Key? key}) : super(key: key);
@@ -42,9 +47,11 @@ class _MovieDescriptionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    model?.movieDetails?.overview ?? '';
     return Text(
-      "Washed-up MMA fighter Cole Young, unaware of his heritage, and hunted by Emperor Shang Tsung's best warrior, Sub-Zero, seeks out and trains with Earth's greatest champions as he prepares to stand against the enemies of Outworld in a high stakes battle for the universe.",
-      style: TextStyle(
+      model?.movieDetails?.overview ?? '',
+      style: const TextStyle(
         color: Colors.white,
         fontSize: 16,
       ),
@@ -74,16 +81,26 @@ class _TopPosterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Image(image: AssetImage(AppImages.moviePoster)),
-        Positioned(
-          top: 20,
-          left: 20,
-          bottom: 20,
-          child: Image(image: AssetImage(AppImages.mortalcombat8)),
-        ),
-      ],
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    final backdropPath = model?.movieDetails?.backdropPath;
+    final posterPath = model?.movieDetails?.posterPath;
+    return AspectRatio(
+      aspectRatio: 390 / 219,
+      child: Stack(
+        children: [
+          backdropPath != null
+              ? Image.network(ApiClient.imageUrl(backdropPath))
+              : const SizedBox.shrink(),
+          Positioned(
+            top: 20,
+            left: 20,
+            bottom: 20,
+            child: posterPath != null
+                ? Image.network(ApiClient.imageUrl(posterPath))
+                : const SizedBox.shrink(),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -93,27 +110,32 @@ class _MovieNameWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RichText(
-      maxLines: 3,
-      textAlign: TextAlign.center,
-      text: TextSpan(
-        children: [
-          TextSpan(
-            text: 'Tom Clancy`s Without Remorse ',
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    var year = model?.movieDetails?.releaseDate?.year.toString();
+    year = year != null ? year = ' ($year)' : '';
+    return Center(
+      child: RichText(
+        maxLines: 3,
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: model?.movieDetails?.title,
+              style: const TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-          TextSpan(
-            text: ' (2021)',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-              color: Colors.grey,
+            TextSpan(
+              text: year,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                color: Colors.grey,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -124,6 +146,9 @@ class _ScoreAndTrailerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    var voteAverage = model?.movieDetails?.voteAverage ?? 0;
+    voteAverage = voteAverage * 10;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -135,12 +160,12 @@ class _ScoreAndTrailerWidget extends StatelessWidget {
                 width: 40,
                 height: 40,
                 child: RadialPercentWidget(
-                  child: Text('72'),
-                  percent: 0.72,
-                  backgroundColor: Color.fromARGB(255, 10, 23, 25),
-                  filledColor: Color.fromARGB(255, 37, 203, 103),
-                  unfilledColor: Color.fromARGB(255, 25, 54, 31),
+                  percent: voteAverage / 100,
+                  backgroundColor: const Color.fromARGB(255, 10, 23, 25),
+                  filledColor: const Color.fromARGB(255, 37, 203, 103),
+                  unfilledColor: const Color.fromARGB(255, 25, 54, 31),
                   lineWidth: 3,
+                  child: Text(voteAverage.toStringAsFixed(0)),
                 ),
               ),
               SizedBox(width: 10),
@@ -168,15 +193,39 @@ class _MovieSummaryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    if (model == null) return const SizedBox.shrink();
+    var texts = <String>[];
+    final releaseDate = model.movieDetails?.releaseDate;
+    if (releaseDate != null) {
+      texts.add(model.stringFromDate(releaseDate));
+    }
+    final productionCountries = model.movieDetails?.productionCountries;
+    if (productionCountries != null && productionCountries.isNotEmpty) {
+      texts.add("(${productionCountries.first.iso})");
+    }
+    final runtime = model.movieDetails?.runtime ?? 0;
+    final duration = Duration(minutes: runtime);
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes.remainder(60);
+    texts.add('${hours}h ${minutes}m');
+    final genres = model.movieDetails?.genres;
+    if (genres != null && genres.isNotEmpty) {
+      var genresNames = <String>[];
+      for (var genre in genres) {
+        genresNames.add(genre.name);
+      }
+      texts.add(genresNames.join(', '));
+    }
     return ColoredBox(
-      color: Color.fromRGBO(22, 21, 25, 1.0),
+      color: const Color.fromRGBO(22, 21, 25, 1.0),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 70),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
         child: Text(
           maxLines: 3,
           textAlign: TextAlign.center,
-          'R 04/23/2021 (US) 1h 50m Action, Fantasy, Adventure',
-          style: TextStyle(
+          texts.join(' '),
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 16,
           ),
