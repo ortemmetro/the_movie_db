@@ -3,6 +3,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:intl/intl.dart';
 import 'package:the_movie_db/domain/api_client/api_client.dart';
+import 'package:the_movie_db/domain/entity/movie_details_credits.dart';
 import 'package:the_movie_db/resources/resources.dart';
 import 'package:the_movie_db/ui/widgets/radial_percent/radial_percent_widget.dart';
 
@@ -33,7 +34,10 @@ class MovieDetailsMainInfoWidget extends StatelessWidget {
           child: _MovieDescriptionWidget(),
         ),
         SizedBox(height: 30),
-        _StaffWidget(),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: _StaffWidget(),
+        ),
         SizedBox(height: 30),
       ],
     );
@@ -240,6 +244,55 @@ class _StaffWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    var crew = model?.movieDetails?.credits.crew;
+    if (crew == null || crew.isEmpty) return const SizedBox.shrink();
+    crew = crew.length > 4 ? crew.sublist(0, 4) : crew;
+    List<List<Employee>> crewChunks = [];
+    for (var i = 0; i < crew.length; i += 2) {
+      crewChunks
+          .add(crew.sublist(i, i + 2 > crew.length ? crew.length : i + 2));
+    }
+    return Column(
+      children: crewChunks
+          .map((chunk) => Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: _StaffWidgetRow(employes: chunk),
+              ))
+          .toList(),
+    );
+  }
+}
+
+class _StaffWidgetRow extends StatelessWidget {
+  final List<Employee> employes;
+  const _StaffWidgetRow({
+    super.key,
+    required this.employes,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: employes
+          .map(
+            (employee) => _StaffWidgetRowItem(employee: employee),
+          )
+          .toList(),
+    );
+  }
+}
+
+class _StaffWidgetRowItem extends StatelessWidget {
+  final Employee employee;
+  const _StaffWidgetRowItem({
+    super.key,
+    required this.employee,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     const nameStyle = TextStyle(
       color: Colors.white,
       fontSize: 16,
@@ -248,50 +301,14 @@ class _StaffWidget extends StatelessWidget {
       color: Colors.white,
       fontSize: 16,
     );
-    return Column(
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Greg Russo', style: nameStyle),
-                Text('Screenplay, Story', style: jobTitleStyle),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Greg Russo', style: nameStyle),
-                Text('Screenplay, Story', style: jobTitleStyle),
-              ],
-            )
-          ],
-        ),
-        SizedBox(height: 20),
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Greg Russo', style: nameStyle),
-                Text('Screenplay, Story', style: jobTitleStyle),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Greg Russo', style: nameStyle),
-                Text('Screenplay, Story', style: jobTitleStyle),
-              ],
-            )
-          ],
-        ),
-      ],
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(employee.name, style: nameStyle),
+          Text(employee.job, style: jobTitleStyle),
+        ],
+      ),
     );
   }
 }
