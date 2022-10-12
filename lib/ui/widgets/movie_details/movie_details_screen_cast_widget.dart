@@ -23,7 +23,7 @@ class MovieDetailsScreenCastWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            height: 235,
+            height: 250,
             child: Scrollbar(
               child: _ActorListWidget(),
             ),
