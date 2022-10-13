@@ -28,11 +28,13 @@ class AuthWidgetModel extends ChangeNotifier {
     _isAuthProgress = true;
     notifyListeners();
     String? sessionId;
+    int? accountId;
     try {
       sessionId = await _apiClient.auth(
         username: login,
         password: password,
       );
+      accountId = await _apiClient.getAccountInfo(sessionId);
     } on ApiClientException catch (e) {
       switch (e.type) {
         case ApiClientExceptionType.network:
@@ -53,38 +55,14 @@ class AuthWidgetModel extends ChangeNotifier {
       return;
     }
 
-    if (sessionId == null) {
+    if (sessionId == null || accountId == null) {
       _errorMessage = 'Неизвестная ошибка, повторите попытку позже';
       notifyListeners();
       return;
     }
     await _sessionDataProvider.setSessionId(sessionId);
+    await _sessionDataProvider.setAccountId(accountId);
     Navigator.of(context)
         .pushReplacementNamed(MainNavigationRouteNames.mainScreen);
   }
 }
-
-// class AuthWidgetModelProvider extends InheritedNotifier {
-//   final AuthWidgetModel model;
-//   const AuthWidgetModelProvider({
-//     super.key,
-//     required this.model,
-//     required Widget child,
-//   }) : super(
-//           child: child,
-//           notifier: model,
-//         );
-
-//   static AuthWidgetModelProvider? watch(BuildContext context) {
-//     return context
-//         .dependOnInheritedWidgetOfExactType<AuthWidgetModelProvider>();
-//   }
-
-//   static AuthWidgetModelProvider? read(BuildContext context) {
-//     final widget = context
-//         .getElementForInheritedWidgetOfExactType<AuthWidgetModelProvider>()
-//         ?.widget;
-//     return widget is AuthWidgetModelProvider ? widget : null;
-//   }
-// }
-
