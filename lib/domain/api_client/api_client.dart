@@ -18,7 +18,7 @@ extension MediaTypeAsString on MediaType {
   }
 }
 
-enum ApiClientExceptionType { network, auth, other }
+enum ApiClientExceptionType { network, auth, other, expiredSession }
 
 class ApiClientException implements Exception {
   final ApiClientExceptionType type;
@@ -292,6 +292,8 @@ class ApiClient {
       final code = status is int ? status : 0;
       if (code == 30) {
         throw ApiClientException(ApiClientExceptionType.auth);
+      } else if (code == 3) {
+        throw ApiClientException(ApiClientExceptionType.expiredSession);
       } else {
         throw ApiClientException(ApiClientExceptionType.other);
       }

@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:the_movie_db/Library/Widgets/Inherited/provider.dart';
 import 'package:the_movie_db/main_model.dart';
 import 'package:the_movie_db/ui/navigation/main_navigation.dart';
-import 'package:the_movie_db/ui/widgets/auth/auth_widget.dart';
-import 'package:the_movie_db/ui/widgets/auth/auth_widget_model.dart';
-import 'package:the_movie_db/ui/widgets/main_screen/main_screen_widget.dart';
-import 'package:the_movie_db/ui/widgets/movie_details/movie_details_widget.dart';
 
 import 'ui/theme/app_colors.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final model = MainModel();
   await model.checkAuth();
-  runApp( MyApp(model: model));
+  const app = MyApp();
+  final widget = Provider(model: model, child: app);
+  runApp(widget);
 }
 
 class MyApp extends StatelessWidget {
-  final MainModel model;
   static final mainNavigation = MainNavigation();
-  const MyApp({Key? key, required this.model}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final model = Provider.read<MainModel>(context);
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -36,17 +35,17 @@ class MyApp extends StatelessWidget {
           unselectedItemColor: Colors.grey,
         ),
       ),
-      localizationsDelegates: const[
+      localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const[
+      supportedLocales: const [
         Locale('ru', 'RU'),
         Locale('en', ''),
       ],
       routes: mainNavigation.routes,
-      initialRoute: mainNavigation.initialRoute(model.isAuth),
+      initialRoute: mainNavigation.initialRoute(model?.isAuth == true),
       onGenerateRoute: mainNavigation.onGenerateRoute,
     );
   }
